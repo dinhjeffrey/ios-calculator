@@ -56,29 +56,22 @@ class GraphVC: UIViewController {
             for point in Double(minXDegree).stride(through: Double(maxXDegree), by: Double(loopIncrementSize)) {
                 let radian = Double(point) * (M_PI / 180)
                 // guard radian.isNormal || radian.isZero else { continue }
-                if storedM == "sin(M)" {
-                    plots.append((
-                        x: radian,
-                        y: sin(radian)
-                    ))
-                } else if storedM == "tan(M)" {
-                    plots.append((
-                        x: radian,
-                        y: tan(radian)
-                    ))
-                } else if storedM == "M" {
-                    plots.append((
-                        x: radian,
-                        y: radian
-                    ))
-                } else {
-                    plots.append((
-                        x: radian,
-                        y: Double(storedM)!
-                    ))
+                
+                // switch
+                let x = radian
+                var y = Double()
+                switch storedM {
+                case "sin(M)": y = sin(x)
+                case "tan(M)": y = tan(x)
+                case "M": y = x
+                default: y = Double(storedM)!
                 }
-                print("storedM is \(storedM)")
+                plots.append((
+                    x: x,
+                    y: y
+                ))
             }
+            print("storedM is \(storedM)")
         }
         // print("minXDegree is \(minXDegree) and maxXDegree is \(maxXDegree)")
         return plots
