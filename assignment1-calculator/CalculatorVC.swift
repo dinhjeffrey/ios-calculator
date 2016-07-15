@@ -18,7 +18,7 @@
 import UIKit
 import Foundation
 
-final class CalculatorVC: UIViewController {
+final class CalculatorVC: UIViewController, UISplitViewControllerDelegate {
     
     @IBOutlet private weak var display: UILabel!
     @IBOutlet private weak var sequenceLabel: UILabel!
@@ -200,6 +200,47 @@ final class CalculatorVC: UIViewController {
         save()
         //print("setting lastAnswer to brain.result")
     }
+    
+    // if we are in a split view, we set ourselves as its delegate
+    // this is so we can prevent an empty detail from collapsing on top of our master
+    // see split view delegate method below
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        splitViewController?.delegate = self
+    }
+    
+    // this method lets the split view's delegate
+    // collapse the detail on top of the master when it's the detail's time to appear
+    // this method returns whether we (the delegate) handled doing this
+    // we don't want an empty detail to collapse on top of our master
+    // so if the detail is an empty ImageViewController, we return true
+    // (which tells the split view controller that we handled the collapse)
+    // of course, we didn't actually handle it, we did nothing
+    // but that's exactly what we want (i.e. no collapse if the detail ivc is empty)
+    
+    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
+        if primaryViewController.contentViewController == self {
+            return true
+        }
+        return false
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 /**** sequenceLabel ****/
@@ -224,6 +265,16 @@ private extension CalculatorVC {
             sequenceValue += mathematicalSymbol + "..."
         } else {
             sequenceValue = brain.descriptionAccumulator + " ="
+        }
+    }
+}
+
+extension UIViewController {
+    var contentViewController: UIViewController {
+        if let navcon = self as? UINavigationController {
+            return navcon.visibleViewController ?? self
+        } else {
+            return self
         }
     }
 }
